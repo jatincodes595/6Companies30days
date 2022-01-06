@@ -1,64 +1,42 @@
-#include<bits/stdc++.h>
-using namespace std;
-typedef long long int ll;
-
-int main()
+int s=0;
+void rec(vector<vector<int>>&bracket,int i,int j,string&ans)
 {
-    ios::sync_with_stdio(false);
-    cin.tie(0);
-    ll n;
-    cin>>n;
-    vector<ll> a(n),vis(n),vis1(n);
-    for(ll i=0;i<n;i++)
+    if(i==j)
     {
-        cin>>a[i];
-        if(a[i]==1)
-        {
-            vis[i]=1;
-        }
-
+      ans+=('A'+s);
+      s++;
+      return ;
     }
-    ll time=0;
-    for(ll i=0;i<n;i++)
-    {
-      if(a[i]==1)
-      {
-          ll j=i+1;
-          ll t1=INT_MAX;
-          for(;j<n;j++)
-          {
-            if(vis[j]==0)
-            {
-              t1=abs(j-i);
-              break;
-            }
-          }
-          ll t2=INT_MAX;
-          ll k=i-1;
-          for(;k>=0;k--)
-          {
-            if(vis[k]==0)
-            {
-              t2=abs(k-i);
-              break;
-            }
-          }
-          if(t1>t2)
-          {
-            vis[k]=1;
-            vis1[k]=1;
-            time+=t2;
-          }
-          else
-          {
-            vis[j]=1;
-            vis1[j]=1;
-            time+=t1;
-          }
-      }
+      ans+='(';
+      rec(bracket,i,bracket[i][j],ans);
+      rec(bracket,bracket[i][j]+1,j,ans);
+      ans+=')';
+      
     }
-    for(auto x:vis1)
-    cout<<x<<" ";
-    cout<<"\n";
-    cout<<time<<"\n";
-}
+ string matrixChainOrder(int p[], int n){
+       vector<vector<int>>dp(n,vector<int>(n,0));
+       vector<vector<int>>bracket(n+1,vector<int>(n+1,0));
+       for(int l=2;l<n;l++)
+       {
+            for(int i=1;i<n;i++)
+            {
+                int j=i+l-1;
+                if(j<n)
+                {
+                    dp[i][j]=INT_MAX;
+                    for(int k=i;k<j;k++)
+                    {
+                        int x=dp[i][k]+dp[k+1][j]+p[i-1]*p[k]*p[j];
+                        if(x<dp[i][j])
+                        {
+                            dp[i][j]=x;
+                            bracket[i][j]=k;
+                        }
+                    }
+                }
+            }
+       }
+       string ans;
+       rec(bracket,1,n-1,ans);
+       return ans;
+    }
